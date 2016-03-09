@@ -114,7 +114,8 @@ module LogStash; module Outputs; class ElasticSearch;
         :transport_options => {
           :socket_timeout => timeout,
           :request_timeout => timeout,
-          :proxy => client_settings[:proxy]
+          :proxy => client_settings[:proxy],
+          :check_connection_timeout => client_settings[:validate_after_inactivity]
         },
         :transport_class => ::Elasticsearch::Transport::Transport::HTTP::Manticore
       }

@@ -15,6 +15,7 @@ module LogStash; module Outputs; class ElasticSearch;
 
       client_settings.merge! setup_ssl(logger, params)
       client_settings.merge! setup_proxy(logger, params)
+      client_settings[:validate_after_inactivity] = params["validate_after_inactivity"]
       common_options.merge! setup_basic_auth(logger, params)
 
       # Update API setup
