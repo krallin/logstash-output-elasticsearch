@@ -61,6 +61,16 @@ module LogStash::Outputs::Elasticsearch
       end
 
       def build_client(options)
+        transport_class = Class.new(::Elasticsearch::Transport::Transport::HTTP::Manticore) do
+          def perform_request(method, path, params={}, body=nil)
+            pipeline = options[:pipeline]
+            puts "PIPELINE? #{pipeline.inspect}"
+            params[:pipeline] = pipeline if pipeline
+            puts "REQ: #{method.inspect} #{path.inspect} #{params.inspect}"
+            super
+          end
+        end
+
         uri = "#{options[:protocol]}://#{options[:host]}:#{options[:port]}"
 
         client_options = {
@@ -70,7 +80,8 @@ module LogStash::Outputs::Elasticsearch
             :socket_timeout => 0,  # do not timeout socket reads
             :request_timeout => 0  # and requests
           },
-          :transport_class => ::Elasticsearch::Transport::Transport::HTTP::Manticore
+          :transport_class => transport_class,
+          :pipeline => options[:pipeline]
         }
 
         if options[:user] && options[:password] then

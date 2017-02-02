@@ -40,6 +40,8 @@ class LogStash::Outputs::ElasticSearch < LogStash::Outputs::Base
 
   config_name "elasticsearch"
 
+  config :pipeline, :validate => :string
+
   # The index to write events to. This can be dynamic using the `%{foo}` syntax.
   # The default value will partition your indices by day so you can more easily
   # delete old data or only search specific date ranges.
@@ -329,7 +331,8 @@ class LogStash::Outputs::ElasticSearch < LogStash::Outputs::Base
 
     common_options = {
       :protocol => @protocol,
-      :client_settings => client_settings
+      :client_settings => client_settings,
+      :pipeline => @pipeline
     }
 
     common_options.merge! setup_basic_auth()
