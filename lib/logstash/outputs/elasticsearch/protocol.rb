@@ -81,12 +81,13 @@ module LogStash::Outputs::Elasticsearch
             :request_timeout => 0  # and requests
           },
           :transport_class => transport_class,
-          :pipeline => options[:pipeline]
+          :pipeline => options[:pipeline],
+          :headers => { 'Content-Type' => 'application/json' }
         }
 
         if options[:user] && options[:password] then
           token = Base64.strict_encode64(options[:user] + ":" + options[:password])
-          client_options[:headers] = { "Authorization" => "Basic #{token}" }
+          client_options[:headers]["Authorization"] = "Basic #{token}"
         end
 
         Elasticsearch::Client.new client_options
